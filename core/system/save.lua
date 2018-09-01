@@ -1,7 +1,7 @@
 local save = {}
 
-local _PACKAGE = (...):match("^(.+)%.[^%.]+")
-local json = require(_PACKAGE .. ".json")
+local _PACKAGE = (...):sub(1, (...):find("%."))
+local json = require(_PACKAGE .. "libraries.json")
 
 function save:initialize()
     self.data = {}
@@ -42,16 +42,22 @@ function save:generateDefaultData()
     self:writeData("all")
 end
 
-function save:encode(i, t) --on save
-    if not i then
-        i = self.currentSave
-    end
+function save:encode(options) --on save
+    local i = options.file or self.currentSave
+    local t = options.data or nil
 
     local data = {}
 
     local date = os.date("%m.%d.%Y")
     data.date = date
-    data.time = math.floor(self:getActiveFile().time)
+
+    if t ~= nil then
+        for k, v in pairs(t) do
+            if data[k] ~= nil then
+                data[k] = v
+            end
+        end
+    end
 
     self:writeData(i, data)
 end

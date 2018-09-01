@@ -5,6 +5,8 @@ window.width  = love.graphics.getWidth()
 window.height = love.graphics.getHeight()
 window.modes  = love.window.getFullscreenModes()
 
+window.ERROR = "Invalid type for argument %d for %s. %s expected, got %s"
+
 function window:initialize()
     self.scalar = vector(1, 1)
     self.size = vector(self.width, self.height)
@@ -26,9 +28,8 @@ function window:calculateFullscreen()
 end
 
 function window:setFullscreen(enable)
-    assert(type(enable) == "boolean", 
-           "Invalid type for argument #1 for `window:setFullscreen`. 
-           Boolean expected, got " .. type(enable))
+    local message = self.ERROR:format(1, "'window:setFullscreen'", "Boolean", type(enable))
+    assert(type(enable) == "boolean", message)
     
     local flags = {} 
     if enable then
@@ -53,13 +54,11 @@ function window:setFullscreen(enable)
 end
 
 function window:setScale(scalarX, scalarY)
-    assert(scalarX == nil or type(scalarX) == "number", 
-           "Invalid type for argument #1 for `window:setScale`. 
-           Number expected, got " .. type(scalarX))
+    local message = self.ERROR:format(1, "'window:setScale'", "Nil or number", type(scalarX))
+    assert(scalarX == nil or type(scalarX) == "number", message)
 
-    assert(scalarY == nil or type(scalarY) == "number", 
-           "Invalid type for argument #2 for `window:setScale`. 
-           Number expected, got " .. type(scalarX))
+    message = self.ERROR:format(1, "'window:setScale'", "Nil or number", type(scalarY))
+    assert(scalarY == nil or type(scalarY) == "number", message)
 
     local scalar = self.scalar
     self.scalar = vector(scalarX or scalar.x, scalarY or scalar.y)
